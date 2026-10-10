@@ -1,0 +1,54 @@
+/*
+Assignment Case: BLU CLI Banking System
+
+Objective:
+Implement a file-based banking CLI in Go with the following features:
+- Create user accounts
+- Transfer funds
+- Add savings deposits
+- Accrue interest on deposits at a fixed rate
+
+System Rules:
+- Interest is 1% (0.01) per minute, compounded.
+- All account and deposit history is stored in plain text files.
+- Deposits are NOT deducted from the main account balance.
+
+Commands:
+1. create_account <name> <amount>
+   → Creates an account file with the starting balance.
+
+2. transfer <from> <to> <amount>
+   → Transfers funds between accounts, recorded in both users' files.
+
+3. add_deposit <name> <amount>
+   → Adds a deposit entry with a timestamp to the user's deposit file.
+
+4. accrue_interest
+   → Scans all deposit files and compounds interest based on elapsed minutes since last update.
+
+File Structure:
+- accounts/<name>.txt → Main balance and transaction log
+- deposits/<name>.txt → One line per deposit: <amount>|<timestamp>
+- history/<name>.txt → (Optional) Chronological action log
+
+Example:
+> go run main.go create_account Alice 1000.00
+> go run main.go create_account Rudolph 2000.00
+> go run main.go add_deposit Alice 500.00
+> go run main.go transfer Rudolph Alice 500.00
+> wait 10 minutes...
+> go run main.go accrue_interest
+
+Expected:
+- Create Alice's Account with amount is 1000
+- Create Rudolph's Account with amount is 2000
+- Add amount to alice's account by 500.0
+- Transfer amount from Rudolph's to Alice's account by 500.0, so the remaining amount for Rudolph and Alice consecutively 1500 and 2000
+- Alice’s deposit increases from 500.00 with 1% interest compounded for 10 minutes.
+- No change to main balance.
+
+
+Your Task:
+Implement logic inside the 'services' package to handle all of the above.
+*/
+

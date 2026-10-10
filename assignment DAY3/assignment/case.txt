@@ -1,0 +1,24 @@
+Concurrent Average Temperature from 1 Billion Readings
+🎯 Goal:
+Simulate the processing of a huge .csv file (e.g. weather_readings.csv) where each line looks like:
+
+Tokyo;35.6897
+Jakarta;-6.1750
+Delhi;28.6100
+Guangzhou;23.1300
+Mumbai;19.0761
+
+Each line is just a string separate by ; delimiter, representing a temperature reading from a random sensor, from anywhere in the world.
+
+Learning Objectives:
+Read and process a very large file line-by-line
+
+Split the data into chunks
+
+Use goroutines to process chunks in parallel
+
+Each goroutine calculates its local sum, min, max, count
+
+Merge results into global stats at the end
+
+
