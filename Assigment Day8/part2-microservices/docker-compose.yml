@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}          # ewallet  -> core-service
+    ports:
+      - "${DB_PUBLISH_PORT:-5433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro   # membuat ewallet_payment
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  core-service:                         # users, wallet, top-up, transfer, history (+ /internal/*)
+    build: ./core-service
+    env_file: .env
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      PORT: "8081"
+      GIN_MODE: release
+    depends_on:
+      db:
+        condition: service_healthy
+
+  payment-service:                      # /transactions/pay (payment session 10 menit)
+    build: ./payment-service
+    env_file: .env
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      PORT: "8082"
+      CORE_SERVICE_URL: http://core-service:8081
+      GIN_MODE: release
+    depends_on:
+      db:
+        condition: service_healthy
+      core-service:
+        condition: service_started
+
+  gateway:                              # satu-satunya pintu masuk: http://localhost:8080/api/v1
+    build: ./gateway
+    environment:
+      PORT: "8080"
+      CORE_SERVICE_URL: http://core-service:8081
+      PAYMENT_SERVICE_URL: http://payment-service:8082
+    ports:
+      - "8080:8080"
+    depends_on:
+      - core-service
+      - payment-service
+
+volumes:
+  pgdata:
