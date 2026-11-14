@@ -1,0 +1,10 @@
+﻿goos: windows
+goarch: amd64
+pkg: combination
+cpu: 11th Gen Intel(R) Core(TM) i5-11260H @ 2.60GHz
+BenchmarkCombine/n=5,k=2-12         	 1801749	       661.1 ns/op	    1024 B/op	      24 allocs/op
+BenchmarkCombine/n=10,k=3-12        	  181971	      6613 ns/op	   13600 B/op	     247 allocs/op
+BenchmarkCombine/n=15,k=4-12        	   22092	     52391 ns/op	  154305 B/op	    1740 allocs/op
+BenchmarkCombine/n=20,k=5-12        	    1153	   1055074 ns/op	 3498995 B/op	   31843 allocs/op
+PASS
+ok  	combination	6.573s
